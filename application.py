@@ -62,7 +62,7 @@ app.logger.debug(f"Finished start. Successfully connected to your mariadb. Table
 
 @app.route("/")
 def index():  
-  return "Hello World!"
+  return "Hello World! 2"
 
 @app.route("/hello")
 def hello():
