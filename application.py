@@ -19,7 +19,7 @@ if __name__ != '__main__':
   handler.setLevel(logging.DEBUG)
   formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
   handler.setFormatter(formatter)
-  app.logger..addHandler(handler)
+  app.logger.addHandler(handler)
 
 def get_secret():
 
