@@ -5,6 +5,9 @@ from flask import Flask
 import logging
 import time
 from datetime import datetime
+import boto3
+from botocore.exceptions import ClientError
+import json
 
 app = Flask(__name__)
 
@@ -13,12 +16,39 @@ if __name__ != '__main__':
   app.logger.handlers = gunicorn_logger.handlers
   app.logger.setLevel(gunicorn_logger.level)
 
+def get_secret():
+
+    secret_name = env.get('DBSECRET')
+    region_name = "us-east-1"
+
+    # Create a Secrets Manager client
+    session = boto3.session.Session()
+    client = session.client(
+        service_name='secretsmanager',
+        region_name=region_name
+    )
+
+    try:
+        get_secret_value_response = client.get_secret_value(
+            SecretId=secret_name
+        )
+    except ClientError as e:
+        # For a list of exceptions thrown, see
+        # https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_GetSecretValue.html
+        raise e
+
+    secret = get_secret_value_response['SecretString']
+
+    return secret
+
+secret = json.loads(get_secret())
+
 # mariadb configs
 db_host = env.get('DBHOSTNAME')
 db_port_str = env.get('DBPORT')
 db_port = int(db_port_str)
-db_user = env.get('DBUSERNAME')
-db_pswd = env.get('DBUSERPSWD')
+db_user = secret["username"]
+db_pswd = secret["password"]
 db_name = env.get('DBNAME') # name ='test'
 
 def app_init():
