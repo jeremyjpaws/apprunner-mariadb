@@ -15,6 +15,11 @@ if __name__ != '__main__':
   gunicorn_logger = logging.getLogger('gunicorn.error')
   app.logger.handlers = gunicorn_logger.handlers
   app.logger.setLevel(gunicorn_logger.level)
+  handler = logging.StreamHandler(sys.stdout)
+  handler.setLevel(logging.DEBUG)
+  formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+  handler.setFormatter(formatter)
+  app.logger..addHandler(handler)
 
 def get_secret():
 
